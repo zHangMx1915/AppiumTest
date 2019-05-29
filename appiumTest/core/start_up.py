@@ -3,12 +3,6 @@ from file_tools.operation_json import OpenJson
 
 class StartApp:
 
-    # def get_config(self, conf):
-    #     get_conf = OpenJson()
-    #     conf_data = get_conf.get_config(conf)
-    #
-    #     return conf_data
-
     # 启动app
     def startUp_app(self, conf_data):
         # conf_data = self.get_config(conf)

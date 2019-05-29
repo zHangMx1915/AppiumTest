@@ -1,5 +1,4 @@
 # coding=utf-8
-#from core.start_case import GoTest
 from core import start_case
 
 class JudgeMode:

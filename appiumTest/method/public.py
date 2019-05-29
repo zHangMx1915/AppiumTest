@@ -77,11 +77,10 @@ class Public:
         print('当前设备屏幕尺寸' + '：' + str(x) + ' ' + str(y))
         x1 = x * float(element['x'])
         y1 = y * float(element['y'])
-
         return x1, y1
 
     # 获取元素的text文本值
-    def element_text(self, driver, element, file_name):
+    def element_text(self, driver, element):
         va = ''
         logs = element['name']
         self.log.mylog(logs, va)
@@ -98,7 +97,7 @@ class Public:
             self.log.mylog(logsa, va)
 
     # toast消息判断
-    def find_toast(self, driver, element, file_name, timeout=10, poll_frequency=0.3):
+    def find_toast(self, driver, element, timeout=10, poll_frequency=0.3):
         va= ''
         try:
             logs = element['name']

@@ -92,7 +92,7 @@ class GoTest:
         driver.wait_activity(value, 30)
 
     # toast消息判断
-    def find_toast(self, driver, element, timeout=10, poll_frequency=0.3):
+    def find_toast(self, driver, element, timeout=10, poll_frequency=0.1):
         va = ''
         try:
             logs = element['name']
@@ -101,8 +101,8 @@ class GoTest:
             t = WebDriverWait(driver, timeout, poll_frequency).until(EC.presence_of_element_located(toast_loc))
             self.log.mylog(logs, va)
             print(t.text)
-        except:
-            logs = '缺少toast消息'
+        except Exception as e:
+            logs = '未检测到toast消息' + e
             self.log.mylog(logs, va)
             print(logs)
 
