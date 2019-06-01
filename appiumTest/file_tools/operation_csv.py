@@ -1,22 +1,17 @@
 # coding=utf-8
 import csv
 # import yaml
-from selenium.common.exceptions import NoSuchElementException   # 异常处理
+# from selenium.common.exceptions import NoSuchElementException   # 异常处理
 
 
 # 读取csv文件元素
-class ReadFile:
+def read_csv(file_name):
+    path = '../test_file/appiumFile/case'
+    file_path = path + '/' + file_name
+    with open(file_path) as csvfile:
+        reader = [each for each in csv.DictReader(csvfile)]     # 读取csv文件
+    return reader
 
-    def read_csv(self,    file_name):
-        """
-        :param file_path:   文件路径
-        :return:    用例内容
-        """
-        path = '../test_file/appiumFile/case'
-        file_path = path + '/' + file_name
-        with open(file_path) as csvfile:
-            reader = [each for each in csv.DictReader(csvfile)]     # 读取csv文件
-        return reader
 
 """
 file_path = "E:/testApi-master/test_file/appiumFile/login.csv"

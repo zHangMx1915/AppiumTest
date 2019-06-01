@@ -1,6 +1,7 @@
 # coding=utf-8
 from core import start_case
 
+
 class JudgeMode:
 
     def __init__(self):

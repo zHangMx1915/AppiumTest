@@ -1,24 +1,24 @@
 # coding=utf-8
 import time
 import os
-from method.public import Public
+from method import public
 from file_tools.log import Log
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as er
 
+
+# 判断执行元素是否需要添加延时
+def wait_time(element):
+    t = element['time']
+    if t:
+        time.sleep(int(t))
+
+        
 # 执行元素
 class GoTest:
 
     def __init__(self):
         self.log = Log()
-        self.public = Public()
-
-    # 判断执行元素是否需要添加延时
-    def wait_time(self, element):
-        for i in element:                                     # 判断元素执行是否有加延时时间值
-            if i == 'time':
-                t = int(element['time'])
-                time.sleep(t)
 
     # id 和id_send_keys
     def ids(self, driver, element):  # 未完成
@@ -26,7 +26,7 @@ class GoTest:
         value = element['value']
         value1 = element['value1']
         print(logs, value, value1)
-        self.wait_time(element)
+        wait_time(element)
         if not value1:
             driver.find_element_by_id(value).click()
             va = 'driver.find_element_by_id(%s)' % value
@@ -42,7 +42,7 @@ class GoTest:
         value1 = element['value1']
         va = 'driver.find_element_by_xpath(%s).click(%s)' % (value, value1)
         self.log.mylog(logs, va)
-        self.wait_time(element)                          # 判断执行元素是否需要添加延时
+        wait_time(element)                          # 判断执行元素是否需要添加延时
         driver.find_element_by_xpath(value).click()
 
     # tap方法
@@ -51,7 +51,7 @@ class GoTest:
         value = element['value']
         va = 'driver.tap(%s)' % value
         self.log.mylog(logs, va)
-        self.wait_time(element)                          # 判断执行元素是否需要添加延时
+        wait_time(element)                          # 判断执行元素是否需要添加延时
         driver.tap(value)
 
     # adb方法
@@ -59,17 +59,16 @@ class GoTest:
         logs = element['name']
         value = element['value']
         value1 = element['value1']
-        # x = element['x']
-        # y = element['y']
-        self.wait_time(element)                          # 判断执行元素是否需要添加延时
-        if not value1:
+        wait_time(element)
+        if value1:
             va = 'os.system(%s)' % value
+            print('空值' + va)
             self.log.mylog(logs, va)
             os.system("adb -s %s shell input text '%s'" % (ip, value))
         else:
-            print('sen_keys')
-            xs, ys = self.public.coordinate(driver, element)
+            xs, ys = public.coordinate(driver, element)
             va = ('adb -s %s shell input tap' % ip + ' ' + str(xs) + ' ' + str(ys))
+            print('有值' + va)
             self.log.mylog(logs, va)
             os.system(va)
 
@@ -79,7 +78,7 @@ class GoTest:
         value = element['value']
         va = 'adb -s %s shell input keyevent %s' % (ip, value)
         self.log.mylog(logs, va)
-        self.wait_time(element)                          # 判断执行元素是否需要添加延时
+        wait_time(element)                          # 判断执行元素是否需要添加延时
         os.system(va)
 
     # 等待指定页面出现
@@ -88,7 +87,7 @@ class GoTest:
         value = element['value']
         va = "driver.wait_activity(%s, 30)" % value
         self.log.mylog(logs, va)
-        self.wait_time(element)
+        wait_time(element)
         driver.wait_activity(value, 30)
 
     # toast消息判断
@@ -98,24 +97,25 @@ class GoTest:
             logs = element['name']
             text = element['value']
             toast_loc = ("xpath", ".//*[contains(@text,'%s')]" % text)
-            t = WebDriverWait(driver, timeout, poll_frequency).until(EC.presence_of_element_located(toast_loc))
+            t = WebDriverWait(driver, timeout, poll_frequency).until(er.presence_of_element_located(toast_loc))
             self.log.mylog(logs, va)
             print(t.text)
         except Exception as e:
-            logs = '未检测到toast消息' + e
+            logs = '未检测到toast消息' + str(e)
             self.log.mylog(logs, va)
             print(logs)
 
-    def window_slip(self, driver, element, times=500):   # other=0.5,
+    def window_slip(self, driver, element, times=800):   # other=0.5,
         va = ''
         logs = element['name']
         self.log.mylog(logs, va)
-        start = float(element['start'])
-        end = float(element['end'])
-        other = float(element['other'])               # 滑动的中心位置
-        n = int(element['n'])                         # 滑动次数
+        slip_conf = element['slide'].split(",")
+        start = float(slip_conf[0].strip())
+        end = float(slip_conf[1].strip())
+        other = float(slip_conf[2].strip())            # 滑动的中心位置
+        n = int(slip_conf[3].strip())
         direction = element['direction']
-        self.wait_time(element)
+        wait_time(element)
         t = times                                # 滑动时间
         size = driver.get_window_size()          # 获取屏幕大小，size = {u'width': 720, u'height': 1280}
         if direction == 'vertical':              # 上下滑动
@@ -136,7 +136,7 @@ class GoTest:
         va = ''
         logs = element['name']
         self.log.mylog(logs, va)
-        self.wait_time(element)
+        wait_time(element)
         text = element['value1']
         el = driver.find_element_by_id(element['value'])
         if el.text == text:
@@ -159,16 +159,18 @@ class GoTest:
                  'driver.find_element_by_id(%s)[%s].click()' % (value, i, value1, i)
             self.log.mylog(logs, va)
             time.sleep(1)
+            # noinspection PyBroadException
             try:
+                # noinspection PyBroadException
                 try:
                     driver.find_elements_by_id(value)[i].click()
                     time.sleep(1)
                     driver.find_element_by_xpath("//*[@text='%s']" % x).click()
                     break
-                except:
+                except Exception:
                     self.window_slip(driver, element)
                     time.sleep(1)
                     driver.find_element_by_id(value1).click()
                     break
-            except:
+            except Exception:
                 driver.back()

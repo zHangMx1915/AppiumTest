@@ -4,9 +4,6 @@ import time
 
 file_name = ''
 class Log:
-    #
-    # def __int__(self):
-    #     self.file_name = ''
 
     # 创建log文件
     def logfile(self):
@@ -25,3 +22,9 @@ class Log:
                 f.write("\n%s :   %s" % (test_time, log))                       # 写入txt
             else:
                 f.write("\n%s :   %s" % (test_time, log + ',  ' + va))          # appium执行的语句
+
+    def log_all(self):
+        global file_name
+        with open(file_name, 'r', encoding='utf-8') as f:
+            log_text = f.read()
+        return log_text

@@ -1,11 +1,10 @@
 from appium import webdriver
-from file_tools.operation_json import OpenJson
+
 
 class StartApp:
 
     # 启动app
     def startUp_app(self, conf_data):
-        # conf_data = self.get_config(conf)
         startUp_action = {
             'platformName': conf_data['platformName'],                  # android还是ios的环境
             'deviceName': conf_data['deviceName'],                      # 手机设备名称，通过adb devices查看
@@ -23,7 +22,6 @@ class StartApp:
 
     # login 启动app,会重新安装app，启动到登录页面
     def login_app(self, conf_data):
-        # conf_data = self.get_config(conf)
         startUp_action = {
             'platformName': conf_data['platformName'],
             'deviceName': conf_data['deviceName'],
@@ -36,6 +34,4 @@ class StartApp:
             'automationName': 'Uiautomator2'
                         }
         driver = webdriver.Remote('http://127.0.0.1:4723/wd/hub', startUp_action)
-
         return driver
-
