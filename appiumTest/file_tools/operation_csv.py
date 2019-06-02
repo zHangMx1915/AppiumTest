@@ -8,8 +8,8 @@ import csv
 def read_csv(file_name):
     path = '../test_file/appiumFile/case'
     file_path = path + '/' + file_name
-    with open(file_path) as csvfile:
-        reader = [each for each in csv.DictReader(csvfile)]     # 读取csv文件
+    with open(file_path) as csv_file:
+        reader = [each for each in csv.DictReader(csv_file)]     # 读取csv文件
     return reader
 
 
@@ -22,33 +22,6 @@ for i in m:
     # print(type(i))
     mx = i['type']
     print(i)
-
-    遍历元素，创建log文件，记录报错报错信息
-    def run_test(self, list, driver, test):
-        element = list[0]
-        path = list[1]
-        ip = list[2]
-        ma = Public()
-        mx = Log()
-        file_name = mx.logfile(path, test)
-        k = element + '/' + test
-        with open(k) as csvfile:
-            reader = [each for each in csv.DictReader(csvfile)]  # 读取csv文件
-            for i in reader:
-                time.sleep(1.5)
-                try:
-                    ma.judge_type(i, driver, file_name, ip)
-                except NoSuchElementException as msg:
-                    print(msg)
-                    for i in range(5):
-                        ma.cut_shot(driver, path)  # 出错时调用截图
-                        time.sleep(0.5)
-                        i += 1
-                    time.sleep(10)
-                    ma.judge_type(i, driver, file_name, ip)
-                except ValueError:
-                    time.sleep(5)
-                    ma.judge_type(i, driver, file_name, ip)
 
     nons = ['姓名', '年龄', '身高', '电话']                           # 创建csv文件
     csvFile2 = open('E:/Action用例/loginin.csv', 'w', newline='')

@@ -5,19 +5,18 @@ from file_tools import operation_json
 """发送邮件"""
 
 
+def get_data():
+    return operation_json.get_config('email')
+
+
 class SendEmail:
 
     def __init__(self):
-        # self.get_email = operation_json
-        # self.get_email = OpenJson()
-        self.data = self.get_data()
+        self.data = get_data()
         self.send_users = self.data.get("send_user")
         self.passwords = self.data.get("password")
         self.user_list = self.data.get("Receipt")        # 收件人邮箱
         self.email_user = []
-
-    def get_data(self):
-        return operation_json.get_config('email')
 
     # 发送邮件
     def send_email(self, log_text):
