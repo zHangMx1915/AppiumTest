@@ -25,6 +25,7 @@ def mylog(log, va=None):
             f.write("\n%s :   %s" % (test_time, log + ',  ' + va))          # appium执行的语句
 
 
+# 读取当前log文件中全部内容
 def log_all():
     global file_name
     with open(file_name, 'r', encoding='utf-8') as f:

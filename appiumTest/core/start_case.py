@@ -14,12 +14,15 @@ def wait_time(element):
         time.sleep(int(t))
 
 
+def find_value(element):
+    name, value, value1 = element['name'], element['value'], element['value1']
+    return name, value, value1
+
+
 # id 和id_send_keys
-def ids(driver, element):  # 未完成
-    logs = element['name']
-    value = element['value']
-    value1 = element['value1']
-    print(logs, value, value1)
+def ids(driver, element):
+    name, value, value1 = find_value(element)
+    print(name, value, value1)
     wait_time(element)
     if not value1:
         driver.find_element_by_id(value).click()
@@ -27,89 +30,78 @@ def ids(driver, element):  # 未完成
     else:
         driver.find_element_by_id(value).send_keys(value1)
         va = 'driver.find_element_by_id(%s).send_keys(%s)' % (value, value1)
-    log.mylog(logs, va)
+    log.mylog(name, va)
 
 
 # xpath方法
 def xpath_type(driver, element):
-    logs = element['name']
-    value = element['value']
-    value1 = element['value1']
+    name, value, value1 = find_value(element)
     va = 'driver.find_element_by_xpath(%s).click(%s)' % (value, value1)
-    log.mylog(logs, va)
+    log.mylog(name, va)
     wait_time(element)                          # 判断执行元素是否需要添加延时
     driver.find_element_by_xpath(value).click()
 
 
 # tap方法
 def tap_type(driver, element):
-    logs = element['name']
-    value = element['value']
+    name, value, value1 = find_value(element)
     va = 'driver.tap(%s)' % value
-    log.mylog(logs, va)
+    log.mylog(name, va)
     wait_time(element)                          # 判断执行元素是否需要添加延时
     driver.tap(value)
 
 
 # adb方法
 def adbs(driver, element, ip):
-    logs = element['name']
-    value = element['value']
-    value1 = element['value1']
+    name, value, value1 = find_value(element)
     wait_time(element)
     if value1:
         va = 'os.system(%s)' % value
-        print('空值' + va)
-        log.mylog(logs, va)
+        log.mylog(name, va)
         os.system("adb -s %s shell input text '%s'" % (ip, value))
     else:
         xs, ys = public.coordinate(driver, element)
         va = ('adb -s %s shell input tap' % ip + ' ' + str(xs) + ' ' + str(ys))
-        print('有值' + va)
-        log.mylog(logs, va)
+        log.mylog(name, va)
         os.system(va)
 
 
 # tab键方法，光标进入下一个输入框
 def tab(element, ip):
-    logs = element['name']
-    value = element['value']
+    name, value, value1 = find_value(element)
     va = 'adb -s %s shell input keyevent %s' % (ip, value)
-    log.mylog(logs, va)
+    log.mylog(name, va)
     wait_time(element)                          # 判断执行元素是否需要添加延时
     os.system(va)
 
 
 # 等待指定页面出现
 def wait_activity(driver, element):
-    logs = element['name']
-    value = element['value']
-    va = "driver.wait_activity(%s, 30)" % value
-    log.mylog(logs, va)
+    name, value, value1 = find_value(element)
+    va = "driver.wait_activity(%s, 13)" % value
+    log.mylog(name, va)
     wait_time(element)
+    print('等待指定页面出现' + va)
     driver.wait_activity(value, 30)
 
 
 # toast消息判断
 def find_toast(driver, element, timeout=10, poll_frequency=0.1):
-    va = ''
     try:
-        logs = element['name']
-        text = element['value']
-        toast_loc = ("xpath", ".//*[contains(@text,'%s')]" % text)
+        name, value, value1 = find_value(element)
+        toast_loc = ("xpath", ".//*[contains(@text,'%s')]" % value)
         t = WebDriverWait(driver, timeout, poll_frequency).until(er.presence_of_element_located(toast_loc))
-        log.mylog(logs, va)
+        log.mylog(name, toast_loc)
         print(t.text)
     except Exception as e:
         logs = '未检测到toast消息' + str(e)
-        log.mylog(logs, va)
+        log.mylog(logs)
         print(logs)
 
 
 def window_slip(driver, element, times=800):   # other=0.5,
-    va = ''
     logs = element['name']
-    log.mylog(logs, va)
+    log.mylog(logs)
     slip_conf = element['slide'].split(",")
     start = float(slip_conf[0].strip())
     end = float(slip_conf[1].strip())
@@ -135,32 +127,29 @@ def window_slip(driver, element, times=800):   # other=0.5,
 
 # 获取元素的text文本值
 def element_text(driver, element):
-    va = ''
     logs = element['name']
-    log.mylog(logs, va)
+    log.mylog(logs)
     wait_time(element)
     text = element['value1']
     el = driver.find_element_by_id(element['value'])
     if el.text == text:
-        logss = '显示正确,显示为：' + el.text
-        print(logss)
-        log.mylog(logss, va)
+        log_text = '显示正确,显示为：' + el.text
+        print(log_text)
+        log.mylog(log_text)
     else:
-        logsa = '显示不正确,显示为：' + el.text
-        print(logsa)
-        log.mylog(logsa, va)
+        log_text = '显示不正确,显示为：' + el.text
+        print(log_text)
+        log.mylog(log_text)
 
 
 # 多个重复id的元素操作,,协拍邀请演员出演角色招募，同意演员申请
 def repeat(driver, element):
-    logs = element['name']
-    value = element['value']
-    value1 = element['value1']
+    name, value, value1 = find_value(element)
     x = element['x']
     for i in range(4):
         va = 'driver.find_elements_by_id(%s)[%s].click(), ' \
              'driver.find_element_by_id(%s)[%s].click()' % (value, i, value1, i)
-        log.mylog(logs, va)
+        log.mylog(name, va)
         time.sleep(1)
         # noinspection PyBroadException
         try:

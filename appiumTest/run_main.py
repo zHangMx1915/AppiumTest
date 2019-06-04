@@ -17,12 +17,45 @@ def get_config(conf):
     return conf_data, ip
 
 
+def error_attempt(i, driver, ip):
+    for j in range(5):
+        time.sleep(3)
+        # noinspection PyBroadException
+        try:
+            log_text = '等待3秒，第%s次尝试！' % (j + 1)
+            log.mylog(log_text)
+            print(log_text)
+            find_run_mode.judge_type(i, driver, ip)
+            return True
+        except Exception:
+            log_text = '第%s次尝试失败！' % (j + 1)
+            log.mylog(log_text)
+            print(log_text)
+
+
+def go_test(case, driver, ip, path):
+    case_data = operation_csv.read_csv(case)
+    for i in case_data:
+        time.sleep(1)
+        if i['run'] == 'y':
+            try:
+                find_run_mode.judge_type(i, driver, ip)
+            except Exception as msg:
+                public.cut_shot(driver, path, 5)            # 截图
+                print(msg)
+                log.mylog('Error : ' + i['name'], str(msg))
+                num = error_attempt(i, driver, ip)
+                if num is None:
+                    return None
+    return True
+
+
 class RunTest:
 
     def __init__(self):
         self.send_email = send_mail.SendEmail()
 
-    def go_start(self, conf, case_list):
+    def run_main_bak(self, conf, case_list):
         path = '../test_file/appiumFile/log'
         log.logfile()                              # 创建log文件
         conf_data, ip = get_config(conf)
@@ -55,6 +88,17 @@ class RunTest:
                 break
         self.send_email.send_email(log.log_all())
 
+    def run_main(self, conf, case_list):
+        path = '../test_file/appiumFile/log'
+        log.logfile()                              # 创建log文件
+        conf_data, ip = get_config(conf)
+        driver = start_up.login_app(conf_data)
+        for case in case_list:
+            num = go_test(case, driver, ip, path)
+            if num is None:
+                break
+        self.send_email.send_email(log.log_all())
+
 
 config = 'action'     # app和设备参数（在data_config.json)
 # conf = 'action1'     # app和设备参数（在data_config.json)
@@ -63,4 +107,4 @@ case_list_m = ['login.csv', '发布招募.csv']
 
 if __name__ == "__main__":
     run = RunTest()
-    run.go_start(config, case_list_m)
+    run.run_main(config, case_list_m)

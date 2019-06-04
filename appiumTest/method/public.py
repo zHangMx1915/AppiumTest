@@ -14,10 +14,18 @@ def wait_time(element):
 
 
 # 截图
-def cut_shot(driver, path):
-    test_time = (time.strftime("%Y-%m-%d %H-%M-%S", time.localtime()))
-    screen_save_path = path + test_time + '.png'
-    driver.get_screenshot_as_file(screen_save_path)
+def cut_shot(driver, path, photo_num=1, time_wait=0.3):
+    """
+    num: 截图张数
+    time：截图间隔时间
+    """
+    for j in range(int(photo_num)):
+        test_time = (time.strftime("%Y-%m-%d %H-%M-%S", time.localtime()))
+        screen_save_path = path + test_time + '.png'
+        driver.get_screenshot_as_file(screen_save_path)
+        time.sleep(time_wait)
+        j += 1
+    
 
 
 # 计算坐标

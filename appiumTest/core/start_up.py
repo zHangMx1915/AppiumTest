@@ -1,4 +1,6 @@
 from appium import webdriver
+from method import public
+import time
 
 
 # 启动app
@@ -32,4 +34,6 @@ def login_app(conf_data):
         'automationName': 'Uiautomator2'
                     }
     driver = webdriver.Remote('http://127.0.0.1:4723/wd/hub', startup_action)
+    time.sleep(5)
+    public.permission(driver)
     return driver
