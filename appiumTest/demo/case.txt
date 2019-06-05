@@ -1,0 +1,11 @@
+﻿用例写在csv文件中
+
+name：用例名称		
+run： 是否运行，运行：y，不运行：空
+type： 元素运行方式：id、 adb、 xpath、 tap、 slip、 toast、 wait 
+value： 要执行的页面元素
+value1： 输入框中要输入的值
+xy:  adb坐标操作时输入坐标位置（屏幕百分百）
+time:  执行元素前需要等待的时间
+direction:  滑动操作时滑动方向
+slide：滑动操作时，滑动的起始坐标、 终止坐标（坐标为屏幕百分百）、 滑动位置、 滑动的次数

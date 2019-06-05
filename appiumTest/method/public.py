@@ -6,11 +6,11 @@ from file_tools import log
 
 
 # 判断执行元素是否需要添加延时
+# 判断执行元素是否需要添加延时
 def wait_time(element):
-    for i in element:  # 判断元素执行是否有加延时时间值
-        if i == 'time':
-            t = int(element['time'])
-            time.sleep(t)
+    t = element['time']
+    if t:
+        time.sleep(int(t))
 
 
 # 截图
@@ -27,7 +27,6 @@ def cut_shot(driver, path, photo_num=1, time_wait=0.3):
         j += 1
     
 
-
 # 计算坐标
 def coordinate(driver, element):
     x = driver.get_window_size()['width']
@@ -36,7 +35,6 @@ def coordinate(driver, element):
     value = element['xy'].split(",")
     x1 = x * float(value[0].strip())
     y1 = y * float(value[1].strip())
-    print('-' * 100, x1, y1)
     return x1, y1
 
 
@@ -92,33 +90,16 @@ def window_slip(driver, element, times=500):   # other=0.5,
 
 # 获取元素的text文本值
 def element_text(driver, element):
-    va = ''
     logs = element['name']
-    log.mylog(logs, va)
+    log.mylog(logs)
     wait_time(element)
     text = element['value1']
     el = driver.find_element_by_id(element['value'])
     if el.text == text:
-        logss = '显示正确,显示为：' + str(el.text)
-        print(logss)
-        log.mylog(logss, va)
+        log_text = '显示正确,显示为：' + str(el.text)
+        print(log_text)
+        log.mylog(log_text)
     else:
-        logsa = '显示不正确,显示为：' + str(el.text)
-        print(logsa)
-        log.mylog(logsa, va)
-
-
-# toast消息判断
-def find_toast(driver, element, timeout=10, poll_frequency=0.3):
-    va = ''
-    try:
-        logs = element['name']
-        log.mylog(logs, va)
-        text = element['value']
-        toast_loc = ("xpath", ".//*[contains(@text,'%s')]" % text)
-        t = WebDriverWait(driver, timeout, poll_frequency).until(er.presence_of_element_located(toast_loc))
-        print(t.text)
-    except Exception as msg:
-        logs = '缺少toast消息' + str(msg)
-        log.mylog(logs, va)
-        print(logs)
+        log_text = '显示不正确,显示为：' + str(el.text)
+        print(log_text)
+        log.mylog(log_text)

@@ -86,7 +86,7 @@ def wait_activity(driver, element):
 
 
 # toast消息判断
-def find_toast(driver, element, timeout=10, poll_frequency=0.1):
+def find_toast(driver, element, timeout=10, poll_frequency=0.05):
     try:
         name, value, value1 = find_value(element)
         toast_loc = ("xpath", ".//*[contains(@text,'%s')]" % value)
@@ -99,7 +99,7 @@ def find_toast(driver, element, timeout=10, poll_frequency=0.1):
         print(logs)
 
 
-def window_slip(driver, element, times=800):   # other=0.5,
+def window_slip(driver, element, times=1000):   # other=0.5,
     logs = element['name']
     log.mylog(logs)
     slip_conf = element['slide'].split(",")
@@ -110,6 +110,7 @@ def window_slip(driver, element, times=800):   # other=0.5,
     direction = element['direction']
     wait_time(element)
     t = times                                # 滑动时间
+    print(logs, start, end, other, n)
     size = driver.get_window_size()          # 获取屏幕大小，size = {u'width': 720, u'height': 1280}
     if direction == 'vertical':              # 上下滑动
         x1 = size['width'] * other
